@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
+import RoleSwitcher from './RoleSwitcher';
 
 const classNames = (...classes) => {
   return classes.filter(Boolean).join(' ');
@@ -18,6 +19,10 @@ const Layout = ({ children }) => {
         { name: 'Dashboard', href: '/admin' },
         { name: 'Products', href: '/admin/products' },
         { name: 'Reports', href: '/admin/reports' },
+        { name: 'Profit & Expense', href: '/admin/profit-expense' },
+        { name: 'Inventory Movement', href: '/admin/inventory-movement' },
+        { name: 'Cashier Performance', href: '/admin/sales-by-user' },
+        { name: 'Activity Logs', href: '/admin/activity-logs' },
       ]
     : [
         { name: 'Dashboard', href: '/cashier' },
@@ -60,7 +65,8 @@ const Layout = ({ children }) => {
                   </div>
                 </div>
                 <div className="hidden md:block">
-                  <div className="ml-4 flex items-center md:ml-6">
+                  <div className="ml-4 flex items-center md:ml-6 gap-3">
+                    <RoleSwitcher />
                     <Menu as="div" className="relative ml-3">
                       <div>
                         <Menu.Button className="flex max-w-xs items-center rounded-full bg-indigo-600 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600">

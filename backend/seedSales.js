@@ -71,7 +71,7 @@ async function seedSales() {
         saleDate.setMinutes(Math.floor(Math.random() * 60));
 
         const sale = new Sale({
-          cashier: i % 2 === 0 ? cashier._id : admin._id, // Alternate between cashier and admin
+          cashier: cashier._id, // Only use cashier (admins don't sell)
           items,
           subtotal,
           tax,
@@ -99,7 +99,7 @@ async function seedSales() {
     console.log('- 3-7 sales per day');
     console.log('- 1-3 items per sale');
     console.log('- Mixed payment methods (cash, card, other)');
-    console.log('- Alternating between cashier and admin users');
+    console.log('- All sales attributed to cashier user only');
 
     process.exit(0);
   } catch (error) {

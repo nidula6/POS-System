@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Sale = require('../models/Sale');
 const { auth } = require('../middleware/auth');
+const { createActivityLog } = require('./activityLogs');
 
 // Create new sale
 router.post('/', auth, async (req, res) => {
@@ -35,6 +36,16 @@ router.post('/', auth, async (req, res) => {
 
     // Populate product details for response
     await sale.populate('items.product');
+
+    // Log sale creation activity
+    await createActivityLog(
+      req.user._id,
+      'create_sale',
+      `Created sale #${sale._id.toString().slice(-6)} - Total: $${total.toFixed(2)} (${items.length} items)`,
+      'Sale',
+      sale._id,
+      { items: items.length, total, paymentMethod }
+    );
 
     res.status(201).json({ sale });
   } catch (error) {

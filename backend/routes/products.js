@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require('../models/Product');
 const { auth, authorize } = require('../middleware/auth');
 const InventoryLog = require('../models/InventoryLog');
+const { createActivityLog } = require('./activityLogs');
 
 // Get all products
 router.get('/', auth, async (req, res) => {
@@ -30,6 +31,16 @@ router.post('/', auth, authorize('admin'), async (req, res) => {
       reference: 'Initial stock',
       performedBy: req.user._id
     }).save();
+
+    // Log product creation activity
+    await createActivityLog(
+      req.user._id,
+      'create_product',
+      `Created product: ${product.name} (SKU: ${product.sku})`,
+      'Product',
+      product._id,
+      { initialStock: product.stockQuantity }
+    );
 
     res.status(201).json(product);
   } catch (error) {
@@ -63,6 +74,16 @@ router.put('/:id', auth, authorize('admin'), async (req, res) => {
       }).save();
     }
 
+    // Log product update activity
+    await createActivityLog(
+      req.user._id,
+      'update_product',
+      `Updated product: ${product.name} (SKU: ${product.sku})`,
+      'Product',
+      product._id,
+      { updates }
+    );
+
     res.json(product);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -80,6 +101,15 @@ router.delete('/:id', auth, authorize('admin'), async (req, res) => {
     // Soft delete by setting active to false
     product.active = false;
     await product.save();
+
+    // Log product deletion activity
+    await createActivityLog(
+      req.user._id,
+      'delete_product',
+      `Deleted product: ${product.name} (SKU: ${product.sku})`,
+      'Product',
+      product._id
+    );
 
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
@@ -141,6 +171,16 @@ router.post('/:id/stock', auth, authorize('admin'), async (req, res) => {
       reference: reference || 'Stock adjustment',
       performedBy: req.user._id
     }).save();
+
+    // Log inventory adjustment activity
+    await createActivityLog(
+      req.user._id,
+      'adjust_inventory',
+      `Adjusted stock for ${product.name}: ${quantity > 0 ? '+' : ''}${quantity} (${oldStock} → ${product.stockQuantity})`,
+      'Product',
+      product._id,
+      { type, quantity: parseInt(quantity), reference }
+    );
 
     res.json(product);
   } catch (error) {

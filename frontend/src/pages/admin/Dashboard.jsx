@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
@@ -94,6 +95,48 @@ const AdminDashboard = () => {
           <h3 className="text-xl font-bold text-gray-900 mb-4">Payment Methods</h3>
           <div className="h-64 w-full md:w-1/2 lg:w-1/3">
             <Doughnut data={salesData} options={{ maintainAspectRatio: false }} />
+          </div>
+        </div>
+
+        {/* Quick Links to New Features */}
+        <div className="mt-8">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">📊 Advanced Reports</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link
+              to="/admin/profit-expense"
+              className="block p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-lg shadow hover:shadow-lg transition-shadow"
+            >
+              <div className="text-3xl mb-2">📉</div>
+              <h4 className="text-lg font-semibold text-gray-900 mb-1">Profit & Expense</h4>
+              <p className="text-sm text-gray-600">Track profitability and margins</p>
+            </Link>
+
+            <Link
+              to="/admin/inventory-movement"
+              className="block p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow hover:shadow-lg transition-shadow"
+            >
+              <div className="text-3xl mb-2">🔁</div>
+              <h4 className="text-lg font-semibold text-gray-900 mb-1">Inventory Movement</h4>
+              <p className="text-sm text-gray-600">Monitor stock changes</p>
+            </Link>
+
+            <Link
+              to="/admin/sales-by-user"
+              className="block p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg shadow hover:shadow-lg transition-shadow"
+            >
+              <div className="text-3xl mb-2">👥</div>
+              <h4 className="text-lg font-semibold text-gray-900 mb-1">Cashier Performance</h4>
+              <p className="text-sm text-gray-600">Track cashier sales metrics</p>
+            </Link>
+
+            <Link
+              to="/admin/activity-logs"
+              className="block p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg shadow hover:shadow-lg transition-shadow"
+            >
+              <div className="text-3xl mb-2">📋</div>
+              <h4 className="text-lg font-semibold text-gray-900 mb-1">Activity Logs</h4>
+              <p className="text-sm text-gray-600">Audit trail & history</p>
+            </Link>
           </div>
         </div>
       </div>

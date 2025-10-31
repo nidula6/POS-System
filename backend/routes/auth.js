@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { auth, authorize } = require('../middleware/auth');
+const { createActivityLog } = require('./activityLogs');
 
 // Login
 router.post('/login', async (req, res) => {
@@ -22,6 +23,15 @@ router.post('/login', async (req, res) => {
     // Update last login
     user.lastLogin = new Date();
     await user.save();
+
+    // Log login activity
+    await createActivityLog(
+      user._id,
+      'login',
+      `${user.name} (@${user.username}) logged in as ${user.role}`,
+      'User',
+      user._id
+    );
 
     // Generate JWT token
     const token = jwt.sign(
@@ -62,6 +72,24 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+// Logout
+router.post('/logout', auth, async (req, res) => {
+  try {
+    // Log logout activity
+    await createActivityLog(
+      req.user._id,
+      'logout',
+      `${req.user.name} (@${req.user.username}) logged out`,
+      'User',
+      req.user._id
+    );
+
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Create new user (admin only)
 router.post('/users', auth, authorize('admin'), async (req, res) => {
   try {
@@ -87,6 +115,15 @@ router.post('/users', auth, authorize('admin'), async (req, res) => {
     });
 
     await user.save();
+
+    // Log user creation
+    await createActivityLog(
+      req.user._id,
+      'create_user',
+      `Created new ${role} user: ${name} (@${username})`,
+      'User',
+      user._id
+    );
 
     res.status(201).json({
       id: user._id,
@@ -135,6 +172,16 @@ router.put('/users/:id', auth, async (req, res) => {
 
     updates.forEach(update => user[update] = req.body[update]);
     await user.save();
+
+    // Log user update
+    await createActivityLog(
+      req.user._id,
+      'update_user',
+      `Updated user: ${user.name} (@${user.username})`,
+      'User',
+      user._id,
+      { updates }
+    );
 
     res.json({
       id: user._id,

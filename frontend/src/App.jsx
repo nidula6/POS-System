@@ -10,6 +10,10 @@ import CashierDashboard from './pages/cashier/Dashboard';
 import Products from './pages/admin/Products';
 import Sales from './pages/cashier/Sales';
 import Reports from './pages/admin/Reports';
+import ActivityLogs from './pages/admin/ActivityLogs';
+import ProfitExpense from './pages/admin/ProfitExpense';
+import InventoryMovement from './pages/admin/InventoryMovement';
+import SalesByUser from './pages/admin/SalesByUser';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -28,6 +32,10 @@ function App() {
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/products" element={<Products />} />
               <Route path="/admin/reports" element={<Reports />} />
+              <Route path="/admin/activity-logs" element={<ActivityLogs />} />
+              <Route path="/admin/profit-expense" element={<ProfitExpense />} />
+              <Route path="/admin/inventory-movement" element={<InventoryMovement />} />
+              <Route path="/admin/sales-by-user" element={<SalesByUser />} />
             </Route>
             
             {/* Cashier Routes */}
